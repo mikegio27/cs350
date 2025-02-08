@@ -250,6 +250,8 @@ class CWMachine(StateMachine):
         ## LED for 500ms one time. Remove this TODO comment block when
         ## complete.
 
+        ## MIKE: Maybe done?
+        self.doDot()
         if(DEBUG):
             print("* Changing state to red - dot")
 
@@ -265,6 +267,9 @@ class CWMachine(StateMachine):
         ## Red LED is turned off. Remove this TODO comment block when
         ## complete.
 
+        ## MIKE: Maybe done?
+        self.redLight.off()
+
     ##
     ## on_enter_dash - Action performed when the state machine transitions
     ## into the dash state
@@ -277,6 +282,10 @@ class CWMachine(StateMachine):
         ## LED for 1500ms one time. Remove this TODO comment block when
         ## complete.
 
+        # Mike: Review for 
+        # sleep(1.5)
+        # self.blueLight.off()
+        self.doDash()
         if(DEBUG):
             print("* Changing state to blue - dash")
 
@@ -291,6 +300,8 @@ class CWMachine(StateMachine):
         ## TODO: Add the single line of code necessary to ensure that the
         ## Blue LED is turned off. Remove this TODO comment block when
         ## complete.
+        # Mike: maybe done...
+       self.blueLight.off()
 
 
     ##
@@ -299,11 +310,7 @@ class CWMachine(StateMachine):
     ##
     def on_enter_dotDashPause(self):
         # wait for 250ms
-
-        ## TODO: Add the single line of code necessary to pause execution
-        ## of the next operation for 250ms. Remove this TODO comment block when
-        ## complete.
-
+        sleep(0.25)
         if(DEBUG):
             print("* Pausing Between Dots/Dashes - 250ms")
 
@@ -320,11 +327,7 @@ class CWMachine(StateMachine):
     ##
     def on_enter_letterPause(self):
         # wait for 750ms
-
-        ## TODO: Add the single line of code necessary to pause execution
-        ## of the next operation for 750ms. Remove this TODO comment block when
-        ## complete.
-
+        sleep(0.75)
         if(DEBUG):
             print("* Pausing Between Letters - 750ms")
 
@@ -341,11 +344,7 @@ class CWMachine(StateMachine):
     ##
     def on_enter_wordPause(self):
         # wait for 3000ms
-        
-        ## TODO: Add the single line of code necessary to pause execution
-        ## of the next operation for 3000ms. Remove this TODO comment block 
-        ## when complete.
-
+        sleep(3)
         if(DEBUG):
             print("* Pausing Between Words - 3000ms")
 
@@ -366,7 +365,11 @@ class CWMachine(StateMachine):
         ## between the primary message of 'SOS' and the backup message of
         ## OK. Remove this TODO comment block when complete. You should be
         ## able to accomplish this in fewer than 6 lines of code.
-
+        # Mike: review for correctness
+        if self.activeMessage == self.message1:
+            self.activeMessage = self.message2
+        else:
+            self.activeMessage = self.message1
         if(DEBUG):
             print(f"* Toggling active message to: {self.activeMessage} ")
 
@@ -420,6 +423,20 @@ class CWMachine(StateMachine):
                     lenMorse = len(morse)
                     morseCounter = 1
                     for x in morse:
+                        if x == '.':
+                            self.doDot()
+                        elif x == '-':
+                            self.doDash()
+                    if morseCounter < lenMorse:
+                        self.doDDP()
+                        morseCounter += 1
+                    if wordCounter < lenWord:
+                        self.doLP()
+                        wordCounter += 1
+                if wordsCounter < lenWords:
+                    self.doWP()
+                    wordsCounter += 1
+                            
 
                         ## Dot or dash?
 
