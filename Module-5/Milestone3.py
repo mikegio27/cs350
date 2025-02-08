@@ -244,13 +244,6 @@ class CWMachine(StateMachine):
     ##
     def on_enter_dot(self):
         # Red light comes on for 500ms
-
-        ##
-        ## TODO: Add the single line of code necessary to blink the Red
-        ## LED for 500ms one time. Remove this TODO comment block when
-        ## complete.
-
-        ## MIKE: Maybe done?
         self.doDot()
         if(DEBUG):
             print("* Changing state to red - dot")
@@ -261,13 +254,6 @@ class CWMachine(StateMachine):
     ##
     def on_exit_dot(self):
         # Red light forced off
-
-        ##
-        ## TODO: Add the single line of code necessary to ensure that the
-        ## Red LED is turned off. Remove this TODO comment block when
-        ## complete.
-
-        ## MIKE: Maybe done?
         self.redLight.off()
 
     ##
@@ -276,16 +262,10 @@ class CWMachine(StateMachine):
     ##
     def on_enter_dash(self):
         # Blue light comes on for 1500ms
-
-        ##
-        ## TODO: Add the single line of code necessary to blink the Blue
-        ## LED for 1500ms one time. Remove this TODO comment block when
-        ## complete.
-
-        # Mike: Review for 
+        self.doDash()
+        # self.blueLight.on()
         # sleep(1.5)
         # self.blueLight.off()
-        self.doDash()
         if(DEBUG):
             print("* Changing state to blue - dash")
 
@@ -295,13 +275,8 @@ class CWMachine(StateMachine):
     ##
     def on_exit_dash(self):
         # Blue light forced off
-
-        ##
-        ## TODO: Add the single line of code necessary to ensure that the
-        ## Blue LED is turned off. Remove this TODO comment block when
-        ## complete.
         # Mike: maybe done...
-       self.blueLight.off()
+        self.blueLight.off()
 
 
     ##
@@ -366,13 +341,13 @@ class CWMachine(StateMachine):
         ## OK. Remove this TODO comment block when complete. You should be
         ## able to accomplish this in fewer than 6 lines of code.
         # Mike: review for correctness
+        if(DEBUG):
+            print(f"* Toggling active message to: {self.activeMessage} ")
         if self.activeMessage == self.message1:
             self.activeMessage = self.message2
         else:
             self.activeMessage = self.message1
-        if(DEBUG):
-            print(f"* Toggling active message to: {self.activeMessage} ")
-
+        
     ##
     ## processButton - Utility method used to send events to the 
     ## state machine. The only thing this event does is trigger
@@ -415,32 +390,7 @@ class CWMachine(StateMachine):
                 lenWord = len(word)
                 wordCounter = 1
                 for char in word:
-
-                    ## Convert the character to its string in morse code
-                    morse = self.morseDict.get(char)
-
-                    ## Setup counter to determine time buffer after letters
-                    lenMorse = len(morse)
-                    morseCounter = 1
-                    for x in morse:
-                        if x == '.':
-                            self.doDot()
-                        elif x == '-':
-                            self.doDash()
-                    if morseCounter < lenMorse:
-                        self.doDDP()
-                        morseCounter += 1
-                    if wordCounter < lenWord:
-                        self.doLP()
-                        wordCounter += 1
-                if wordsCounter < lenWords:
-                    self.doWP()
-                    wordsCounter += 1
-                            
-
-                        ## Dot or dash?
-
-                        ## TODO: Add the code necessary code to determine if 
+                    ## TODO: Add the code necessary code to determine if 
                         ## the next symbol is a dot or a dash and transition
                         ## the state machine to the appropriate state.
                         ## Remove this TODO comment block when complete. 
@@ -476,7 +426,31 @@ class CWMachine(StateMachine):
                 ## Remove this TODO comment block when complete. 
                 ## You should be able to accomplish this in fewer 
                 ## than 6 lines of code.
+                    ## Convert the character to its string in morse code
+                    morse = self.morseDict.get(char)
 
+                    ## Setup counter to determine time buffer after letters
+                    lenMorse = len(morse)
+                    morseCounter = 1
+                    for x in morse:
+                        if x == '.':
+                            self.doDot()
+                        elif x == '-':
+                            self.doDash()
+                    if morseCounter < lenMorse:
+                        print(f'moreseCounter: {morseCounter}')
+                        print(f'lenMorse: {lenMorse}')
+                        self.doDDP()
+                        morseCounter += 1
+                    if wordCounter < lenWord:
+                        print(f'wordCounter: {wordCounter}')
+                        print(f'lenWord: {lenWord}')
+                        self.doLP()
+                        wordCounter += 1
+                if wordsCounter < lenWords:
+                    self.doWP()
+                    wordsCounter += 1
+                        
         ## Cleanup the display i.e. clear it
         self.screen.cleanupDisplay()
 
