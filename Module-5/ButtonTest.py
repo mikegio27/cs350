@@ -87,6 +87,8 @@ def swap():
 ## the swap method when pressed.
 ##
 greenButton = Button(24)
+greenButton.when_pressed = lambda: print("Button Pressed!")
+greenButton.when_released = lambda: print("Button Released!")
 greenButton.when_pressed = swap
 
 ##
@@ -99,11 +101,13 @@ repeat = True
 ##
 while repeat:
     try:
+        print(greenButton)
+        print(f"Button State: {greenButton.is_pressed}") 
         if(greenButton.is_pressed):
             ## Only display if the DEBUG flag is set
             if(DEBUG):
                 print("Button Pressed")
-        sleep(20)
+        sleep(0.1)
     except KeyboardInterrupt:
         print("Cleaning up. Exiting...")
         repeat = False

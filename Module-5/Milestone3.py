@@ -302,9 +302,9 @@ class CWMachine(StateMachine):
     ##
     def on_enter_letterPause(self):
         # wait for 750ms
-        sleep(0.75)
         if(DEBUG):
             print("* Pausing Between Letters - 750ms")
+        sleep(0.75)
 
     ##
     ## on_exit_letterPause - Action performed when the statemachine transitions
@@ -319,9 +319,9 @@ class CWMachine(StateMachine):
     ##
     def on_enter_wordPause(self):
         # wait for 3000ms
-        sleep(3)
         if(DEBUG):
             print("* Pausing Between Words - 3000ms")
+        sleep(3)
 
     ##
     ## on_exit_wordPause - Action performed when the statemachine transitions
@@ -374,62 +374,18 @@ class CWMachine(StateMachine):
         ## Loop until we are shutdown
         ##
         while not self.endTransmission:
-
             ## Display the active message in our 16x2 screen
             self.screen.updateScreen(f"Sending:\n{self.activeMessage}")
-
             ## Parse message for individual wordsTAM
             wordList = self.activeMessage.split()
-
             ## Setup counter to determine time buffer after words
             lenWords = len(wordList)
             wordsCounter = 1
             for word in wordList:
-            
-                ## Setup counter to determine time buffer after letters
                 lenWord = len(word)
                 wordCounter = 1
                 for char in word:
-                    ## TODO: Add the code necessary code to determine if 
-                        ## the next symbol is a dot or a dash and transition
-                        ## the state machine to the appropriate state.
-                        ## Remove this TODO comment block when complete. 
-                        ## You should be able to accomplish this in fewer 
-                        ## than 10 lines of code.
-
-                        # If we are still sending process a dotDashPause event
-
-                        ## TODO: Add the code necessary code to determine if 
-                        ## there is another symbol in the message. If so
-                        ## transition the state machine to the appropriate 
-                        ## state, and increase the morseCounter variable by 1.
-                        ## Remove this TODO comment block when complete. 
-                        ## You should be able to accomplish this in fewer 
-                        ## than 6 lines of code.
-
-                    # If we are still sending process a letterPause event
-
-                    ## TODO: Add the code necessary code to determine if 
-                    ## there is another letter in the message. If so
-                    ## transition the state machine to the appropriate 
-                    ## state, and increase the wordCounter variable by 1.
-                    ## Remove this TODO comment block when complete. 
-                    ## You should be able to accomplish this in fewer 
-                    ## than 6 lines of code.
-
-                # If we are still sending process a wordPause event
-
-                ## TODO: Add the code necessary code to determine if 
-                ## there is another word in the message. If so
-                ## transition the state machine to the appropriate 
-                ## state, and increase the wordsCounter variable by 1.
-                ## Remove this TODO comment block when complete. 
-                ## You should be able to accomplish this in fewer 
-                ## than 6 lines of code.
-                    ## Convert the character to its string in morse code
                     morse = self.morseDict.get(char)
-
-                    ## Setup counter to determine time buffer after letters
                     lenMorse = len(morse)
                     morseCounter = 1
                     for x in morse:
@@ -438,14 +394,10 @@ class CWMachine(StateMachine):
                         elif x == '-':
                             self.doDash()
                     if morseCounter < lenMorse:
-                        print(f'moreseCounter: {morseCounter}')
-                        print(f'lenMorse: {lenMorse}')
                         self.doDDP()
                         morseCounter += 1
                     if wordCounter < lenWord:
-                        print(f'wordCounter: {wordCounter}')
-                        print(f'lenWord: {lenWord}')
-                        self.doLP()
+                        self.doDDP()
                         wordCounter += 1
                 if wordsCounter < lenWords:
                     self.doWP()
@@ -472,15 +424,7 @@ cwMachine.run()
 ##
 greenButton = Button(24)
 
-## TODO: Add the code necessary code to assign the
-## appropriate function to the greenButton variable 
-## so that when it is pressed, the message being sent
-## changes to the alternate message - no matter which
-## message is currently being send.
-## Remove this TODO comment block when complete. 
-## You should be able to accomplish this in a single
-## line of code.
-
+greenButton.when_pressed = cwMachine.processButton
 ##
 ## Setup loop variable
 ##
