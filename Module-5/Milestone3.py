@@ -275,7 +275,6 @@ class CWMachine(StateMachine):
     ##
     def on_exit_dash(self):
         # Blue light forced off
-        # Mike: maybe done...
         self.blueLight.off()
 
 
@@ -336,11 +335,6 @@ class CWMachine(StateMachine):
     ##
     def toggleMessage(self):
 
-        ## TODO: Add the code necessary to toggle the activeMessage 
-        ## between the primary message of 'SOS' and the backup message of
-        ## OK. Remove this TODO comment block when complete. You should be
-        ## able to accomplish this in fewer than 6 lines of code.
-        # Mike: review for correctness
         if(DEBUG):
             print(f"* Toggling active message to: {self.activeMessage} ")
         if self.activeMessage == self.message1:
@@ -397,7 +391,7 @@ class CWMachine(StateMachine):
                         self.doDDP()
                         morseCounter += 1
                     if wordCounter < lenWord:
-                        self.doDDP()
+                        self.doLP()
                         wordCounter += 1
                 if wordsCounter < lenWords:
                     self.doWP()
@@ -425,6 +419,7 @@ cwMachine.run()
 greenButton = Button(24)
 
 greenButton.when_pressed = cwMachine.processButton
+
 ##
 ## Setup loop variable
 ##
