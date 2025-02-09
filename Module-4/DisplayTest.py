@@ -92,7 +92,7 @@ while repeat:
         # lcd_line_1 = 'Happy\n'
         # lcd_line_2 = 'Display Day!'
         lcd_line_1 = 'Hey!\n'
-        lcd_line_2 = 'Fuck you!'
+        lcd_line_2 = 'Good morning!!'
         # combine both lines into one update to the display
         lcd.message = lcd_line_1 + lcd_line_2
 
