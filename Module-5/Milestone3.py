@@ -244,12 +244,7 @@ class CWMachine(StateMachine):
     ##
     def on_enter_dot(self):
         # Red light comes on for 500ms
-
-        ##
-        ## TODO: Add the single line of code necessary to blink the Red
-        ## LED for 500ms one time. Remove this TODO comment block when
-        ## complete.
-
+        self.doDot()
         if(DEBUG):
             print("* Changing state to red - dot")
 
@@ -259,11 +254,7 @@ class CWMachine(StateMachine):
     ##
     def on_exit_dot(self):
         # Red light forced off
-
-        ##
-        ## TODO: Add the single line of code necessary to ensure that the
-        ## Red LED is turned off. Remove this TODO comment block when
-        ## complete.
+        self.redLight.off()
 
     ##
     ## on_enter_dash - Action performed when the state machine transitions
@@ -271,12 +262,10 @@ class CWMachine(StateMachine):
     ##
     def on_enter_dash(self):
         # Blue light comes on for 1500ms
-
-        ##
-        ## TODO: Add the single line of code necessary to blink the Blue
-        ## LED for 1500ms one time. Remove this TODO comment block when
-        ## complete.
-
+        self.doDash()
+        # self.blueLight.on()
+        # sleep(1.5)
+        # self.blueLight.off()
         if(DEBUG):
             print("* Changing state to blue - dash")
 
@@ -286,11 +275,7 @@ class CWMachine(StateMachine):
     ##
     def on_exit_dash(self):
         # Blue light forced off
-
-        ##
-        ## TODO: Add the single line of code necessary to ensure that the
-        ## Blue LED is turned off. Remove this TODO comment block when
-        ## complete.
+        self.blueLight.off()
 
 
     ##
@@ -299,11 +284,7 @@ class CWMachine(StateMachine):
     ##
     def on_enter_dotDashPause(self):
         # wait for 250ms
-
-        ## TODO: Add the single line of code necessary to pause execution
-        ## of the next operation for 250ms. Remove this TODO comment block when
-        ## complete.
-
+        sleep(0.25)
         if(DEBUG):
             print("* Pausing Between Dots/Dashes - 250ms")
 
@@ -320,13 +301,9 @@ class CWMachine(StateMachine):
     ##
     def on_enter_letterPause(self):
         # wait for 750ms
-
-        ## TODO: Add the single line of code necessary to pause execution
-        ## of the next operation for 750ms. Remove this TODO comment block when
-        ## complete.
-
         if(DEBUG):
             print("* Pausing Between Letters - 750ms")
+        sleep(0.75)
 
     ##
     ## on_exit_letterPause - Action performed when the statemachine transitions
@@ -341,13 +318,9 @@ class CWMachine(StateMachine):
     ##
     def on_enter_wordPause(self):
         # wait for 3000ms
-        
-        ## TODO: Add the single line of code necessary to pause execution
-        ## of the next operation for 3000ms. Remove this TODO comment block 
-        ## when complete.
-
         if(DEBUG):
             print("* Pausing Between Words - 3000ms")
+        sleep(3)
 
     ##
     ## on_exit_wordPause - Action performed when the statemachine transitions
@@ -362,14 +335,13 @@ class CWMachine(StateMachine):
     ##
     def toggleMessage(self):
 
-        ## TODO: Add the code necessary to toggle the activeMessage 
-        ## between the primary message of 'SOS' and the backup message of
-        ## OK. Remove this TODO comment block when complete. You should be
-        ## able to accomplish this in fewer than 6 lines of code.
-
         if(DEBUG):
             print(f"* Toggling active message to: {self.activeMessage} ")
-
+        if self.activeMessage == self.message1:
+            self.activeMessage = self.message2
+        else:
+            self.activeMessage = self.message1
+        
     ##
     ## processButton - Utility method used to send events to the 
     ## state machine. The only thing this event does is trigger
@@ -396,70 +368,35 @@ class CWMachine(StateMachine):
         ## Loop until we are shutdown
         ##
         while not self.endTransmission:
-
             ## Display the active message in our 16x2 screen
             self.screen.updateScreen(f"Sending:\n{self.activeMessage}")
-
             ## Parse message for individual wordsTAM
             wordList = self.activeMessage.split()
-
             ## Setup counter to determine time buffer after words
             lenWords = len(wordList)
             wordsCounter = 1
             for word in wordList:
-            
-                ## Setup counter to determine time buffer after letters
                 lenWord = len(word)
                 wordCounter = 1
                 for char in word:
-
-                    ## Convert the character to its string in morse code
                     morse = self.morseDict.get(char)
-
-                    ## Setup counter to determine time buffer after letters
                     lenMorse = len(morse)
                     morseCounter = 1
                     for x in morse:
-
-                        ## Dot or dash?
-
-                        ## TODO: Add the code necessary code to determine if 
-                        ## the next symbol is a dot or a dash and transition
-                        ## the state machine to the appropriate state.
-                        ## Remove this TODO comment block when complete. 
-                        ## You should be able to accomplish this in fewer 
-                        ## than 10 lines of code.
-
-                        # If we are still sending process a dotDashPause event
-
-                        ## TODO: Add the code necessary code to determine if 
-                        ## there is another symbol in the message. If so
-                        ## transition the state machine to the appropriate 
-                        ## state, and increase the morseCounter variable by 1.
-                        ## Remove this TODO comment block when complete. 
-                        ## You should be able to accomplish this in fewer 
-                        ## than 6 lines of code.
-
-                    # If we are still sending process a letterPause event
-
-                    ## TODO: Add the code necessary code to determine if 
-                    ## there is another letter in the message. If so
-                    ## transition the state machine to the appropriate 
-                    ## state, and increase the wordCounter variable by 1.
-                    ## Remove this TODO comment block when complete. 
-                    ## You should be able to accomplish this in fewer 
-                    ## than 6 lines of code.
-
-                # If we are still sending process a wordPause event
-
-                ## TODO: Add the code necessary code to determine if 
-                ## there is another word in the message. If so
-                ## transition the state machine to the appropriate 
-                ## state, and increase the wordsCounter variable by 1.
-                ## Remove this TODO comment block when complete. 
-                ## You should be able to accomplish this in fewer 
-                ## than 6 lines of code.
-
+                        if x == '.':
+                            self.doDot()
+                        elif x == '-':
+                            self.doDash()
+                    if morseCounter < lenMorse:
+                        self.doDDP()
+                        morseCounter += 1
+                    if wordCounter < lenWord:
+                        self.doLP()
+                        wordCounter += 1
+                if wordsCounter < lenWords:
+                    self.doWP()
+                    wordsCounter += 1
+                        
         ## Cleanup the display i.e. clear it
         self.screen.cleanupDisplay()
 
@@ -481,14 +418,7 @@ cwMachine.run()
 ##
 greenButton = Button(24)
 
-## TODO: Add the code necessary code to assign the
-## appropriate function to the greenButton variable 
-## so that when it is pressed, the message being sent
-## changes to the alternate message - no matter which
-## message is currently being send.
-## Remove this TODO comment block when complete. 
-## You should be able to accomplish this in a single
-## line of code.
+greenButton.when_pressed = cwMachine.processButton
 
 ##
 ## Setup loop variable
