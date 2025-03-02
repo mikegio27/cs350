@@ -108,7 +108,6 @@ i2c = board.I2C()
 ## Initialize our Temperature and Humidity sensor
 ##
 thSensor = adafruit_ahtx0.AHTx0(i2c)
-
 ##
 ## Initialize our serial connection
 ##
